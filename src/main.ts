@@ -6,6 +6,8 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import 'nprogress/nprogress.css'
+const app = createApp(App)
 
 const app = createApp(App)
 

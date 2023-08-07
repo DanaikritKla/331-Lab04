@@ -9,7 +9,9 @@ import EventRegisterView from "../views/event/EventRegisterView.vue"
 import EventLayoutView from "../views/event/EventLayoutView.vue"
 import NotFoundView from "../views/NotFoundView.vue"
 import NetworkErrorView from '../views/NetworkErrorView.vue'
-import nProgress from 'nprogress'
+import NProgress from 'nprogress'
+import EventService from '@/services/EventService'
+import { useEventStore } from '@/stores/event'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,12 +41,13 @@ const router = createRouter({
       path : '/event/:id',
       name : 'event-layout',
       component : EventLayoutView,
-      props : true,
-        beforeEnter: (to) => {
-          const id: number = parseInt(to.params.id as string)
+      beforeEnter: (to) => {
+        const id: number = parseInt(to.params.id as string)
+        const eventStore = useEventStore()
         return EventService.getEventById(id)
         .then((response) => {
           // need to set up the data for the component
+          eventStore.setEvent(response.data)
         }).catch((error) => {
           if (error.response && error.response.status === 404) {
             return {
@@ -61,19 +64,16 @@ const router = createRouter({
           path: '',
           name: 'event-detail',
           component: EventDetailView,
-          props: true
         },
         {
           path: 'edit',
           name: 'event-edit',
           component: EventEditView,
-          props: true
         },
         {
           path: 'register',
           name: 'event-register',
           component: EventRegisterView,
-          props: true
         }
       ]
     },
@@ -98,13 +98,11 @@ const router = createRouter({
 })
 
 router.beforeEach(() => {
-  nProgress.start()
+NProgress.start()
 })
 
 router.afterEach(() => {
-  nProgress.done()
+  NProgress.done()
 })
-
-
 
 export default router

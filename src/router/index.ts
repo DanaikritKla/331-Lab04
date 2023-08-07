@@ -41,8 +41,21 @@ const router = createRouter({
       component : EventLayoutView,
       props : true,
         beforeEnter: (to) => {
-          // <-- put API call here
-        },
+          const id: number = parseInt(to.params.id as string)
+        return EventService.getEventById(id)
+        .then((response) => {
+          // need to set up the data for the component
+        }).catch((error) => {
+          if (error.response && error.response.status === 404) {
+            return {
+              name : '404-resource'
+              ,params: { resource : 'event'}
+            }
+          } else {
+            return { name : 'network-error'}
+          }
+        })
+      },
       children : [
         {
           path: '',

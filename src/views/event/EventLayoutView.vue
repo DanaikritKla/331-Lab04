@@ -6,6 +6,7 @@ const store = useEventStore()
 const event = storeToRefs(store).event
 const id = ref(event?.value?.id)
 
+
 </script>
 
 <template>
